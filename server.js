@@ -6,7 +6,11 @@ var bodyParser = require('body-parser')
 
 var port = process.env.PORT || 8080
 
-/* Access data from POSTs */
+/* models */
+var Bear = require('./app/models/bear')
+mongoose.connect('mongodb://localhost:27017/mean-restful-api-example')
+
+/* access data from POSTs */
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
@@ -14,7 +18,7 @@ app.use(bodyParser.json())
 app.use(morgan('dev'))
 
 /* routing */
-var apiRoute = require('./routes/api')
+var apiRoute = require('./app/routes/api')
 app.use('/api', apiRoute)
 
 /* start server */
