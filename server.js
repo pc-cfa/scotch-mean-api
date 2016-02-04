@@ -14,15 +14,8 @@ app.use(bodyParser.json())
 app.use(morgan('dev'))
 
 /* routing */
-var router = express.Router()
-
-// api routes
-router.get('/', function (req, res) {
-  res.json({ message: 'Hello World, This is the root of our api'})
-})
-
-/* register routes */
-app.use('/api', router)
+var apiRoute = require('./routes/api')
+app.use('/api', apiRoute)
 
 /* start server */
 app.listen(port)
