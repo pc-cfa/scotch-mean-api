@@ -8,6 +8,7 @@ var Bear = mongoose.model('Bear')
 //   res.json({ message: 'Hello World, This is the root of our api'})
 // })
 
+// create a bear
 router.post('/bears', function (req, res, next) {
   var bear = new Bear()
   bear.name = req.body.name
@@ -18,6 +19,17 @@ router.post('/bears', function (req, res, next) {
     }
 
     return res.json({ message: 'Bear created!' })
+  })
+})
+
+// get all bears
+router.get('/bears', function (req, res, next) {
+  Bear.find(function (err, bears) {
+    if (err) {
+      res.send(err)
+    }
+
+    res.json(bears)
   })
 })
 
