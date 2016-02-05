@@ -33,4 +33,14 @@ router.get('/bears', function (req, res, next) {
   })
 })
 
+// get a bear
+router.get('/bears/:bear_id', function (req, res, next) {
+  Bear.findById(req.params.bear_id, function (err, bear) {
+    if (err) {
+      res.send(err)
+    }
+    res.json(bear)
+  })
+})
+
 module.exports = router
