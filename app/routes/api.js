@@ -26,7 +26,7 @@ router.post('/bears', function (req, res, next) {
 router.get('/bears', function (req, res, next) {
   Bear.find(function (err, bears) {
     if (err) {
-      res.send(err)
+      return next(err)
     }
 
     res.json(bears)
@@ -37,7 +37,9 @@ router.get('/bears', function (req, res, next) {
 router.get('/bears/:bear_id', function (req, res, next) {
   Bear.findById(req.params.bear_id, function (err, bear) {
     if (err) {
-      res.send(err)
+      return next(err)
+    } else if (!bear) {
+      return res.status(404).json({ message: 'No Bear found!' })
     }
 
     res.json(bear)
@@ -48,14 +50,16 @@ router.get('/bears/:bear_id', function (req, res, next) {
 router.put('/bears/:bear_id', function (req, res, next) {
   Bear.findById(req.params.bear_id, function (err, bear) {
     if (err) {
-      res.send(err)
+      return next(err)
+    } else if (!bear) {
+      return res.status(404).json({ message: 'No Bear found!' })
     }
 
     bear.name = req.body.name
 
     bear.save(function (err) {
       if (err) {
-        res.send(err)
+        return next(err)
       }
 
       res.json({ message: 'Bear updated!' })
@@ -66,9 +70,11 @@ router.put('/bears/:bear_id', function (req, res, next) {
 // delete a bear
 router.delete('/bears/:bear_id', function (req, res, next) {
   var deleteBear = { _id: req.params.bear_id }
-  Bear.remove(deleteBear, function (err) {
+  Bear.remove(deleteBear, function (err, bear) {
     if (err) {
-      res.send(err)
+      return next(err)
+    } else if (!bear) {
+      return res.status(404).json({ message: 'No Bear found!' })
     }
 
     res.json({ message: 'Bear deleted!' })
