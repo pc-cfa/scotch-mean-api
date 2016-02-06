@@ -3,10 +3,10 @@ var router = express.Router()
 var mongoose = require('mongoose')
 var Bear = mongoose.model('Bear')
 
-/* example route */
-// router.get('/', function (req, res) {
-//   res.json({ message: 'Hello World, This is the root of our api'})
-// })
+// example route
+router.get('/', function (req, res, next) {
+  res.json({ message: 'API Root' })
+})
 
 // create a bear
 router.post('/bears', function (req, res, next) {
@@ -18,7 +18,7 @@ router.post('/bears', function (req, res, next) {
       return next(err)
     }
 
-    return res.json({ message: 'Bear created!' })
+    res.json({ message: 'Bear created!' })
   })
 })
 
