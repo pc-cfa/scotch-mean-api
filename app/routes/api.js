@@ -39,6 +39,7 @@ router.get('/bears/:bear_id', function (req, res, next) {
     if (err) {
       res.send(err)
     }
+
     res.json(bear)
   })
 })
@@ -57,8 +58,20 @@ router.put('/bears/:bear_id', function (req, res, next) {
         res.send(err)
       }
 
-      res.send({ message: 'Bear updated!' })
+      res.json({ message: 'Bear updated!' })
     })
+  })
+})
+
+// delete a bear
+router.delete('/bears/:bear_id', function (req, res, next) {
+  var deleteBear = { _id: req.params.bear_id }
+  Bear.remove(deleteBear, function (err) {
+    if (err) {
+      res.send(err)
+    }
+
+    res.json({ message: 'Bear deleted!' })
   })
 })
 
