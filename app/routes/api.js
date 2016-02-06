@@ -43,4 +43,23 @@ router.get('/bears/:bear_id', function (req, res, next) {
   })
 })
 
+// updated a bear
+router.put('/bears/:bear_id', function (req, res, next) {
+  Bear.findById(req.params.bear_id, function (err, bear) {
+    if (err) {
+      res.send(err)
+    }
+
+    bear.name = req.body.name
+
+    bear.save(function (err) {
+      if (err) {
+        res.send(err)
+      }
+
+      res.send({ message: 'Bear updated!' })
+    })
+  })
+})
+
 module.exports = router
