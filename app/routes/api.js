@@ -18,7 +18,7 @@ router.post('/bears', function (req, res, next) {
       return next(err)
     }
 
-    res.json({ message: 'Bear created!' })
+    res.json({ message: 'Bear created!', bear_id: bear._id })
   })
 })
 
