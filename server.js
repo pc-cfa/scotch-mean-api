@@ -1,11 +1,12 @@
-var express = require('express')
-var mongoose = require('mongoose')
-var morgan = require('morgan')
+var express    = require('express')
+var mongoose   = require('mongoose')
+var morgan     = require('morgan')
 var bodyParser = require('body-parser')
 
 /* models */
-require('./app/models/bear')
-mongoose.connect('mongodb://localhost:27017/mean-restful-api-example')
+require('./app/models/todo')
+
+mongoose.connect('mongodb://localhost:27017/scotch-mean-api')
 
 /* routes*/
 var apiRoute = require('./app/routes/api')
@@ -37,10 +38,7 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
-    res.json({
-      message: err.message,
-      error: err
-    })
+    res.json({ message: err.message, error: err })
   })
 }
 
@@ -48,12 +46,13 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
   res.status(err.status || 500)
-  res.json({
-    message: err.message,
-    error: {}
-  })
+  res.json({ message: err.message, error: {} })
 })
 
 /* start server */
-var port = process.env.PORT || 8080
-app.listen(port)
+var port = process.env.PORT || 3000
+
+app.listen(port, function() {
+  console.log('JSON REST API service running on http://localhost:3000');
+});
+
