@@ -1,4 +1,5 @@
 var express  = require('express');
+var cors     = require('cors');
 var router   = express.Router();
 var mongoose = require('mongoose');
 var Todo     = mongoose.model('Todo');
@@ -14,11 +15,11 @@ const E_TIMESTAMP_MODE_UPDATE = 2;
 function checkRequiredParams(body) {
   var missing_params = [];
 
-  if (!body.title      ) { missing_params.push('title      '); } 
-  if (!body.description) { missing_params.push('description'); } 
-  if (!body.resourceUrl) { missing_params.push('resourceUrl'); } 
-  if (!body.state      ) { missing_params.push('state'      ); } 
-  if (!body.author     ) { missing_params.push('author'     ); } 
+  if (!body.hasOwnProperty('title'      )) { missing_params.push('title'      ); } 
+  if (!body.hasOwnProperty('content'    )) { missing_params.push('content'    ); } 
+  if (!body.hasOwnProperty('resourceUrl')) { missing_params.push('resourceUrl'); } 
+  if (!body.hasOwnProperty('state'      )) { missing_params.push('state'      ); } 
+  if (!body.hasOwnProperty('author'     )) { missing_params.push('author'     ); } 
 
   return (missing_params.length == 0);
 }
@@ -26,11 +27,11 @@ function checkRequiredParams(body) {
 ///////////////////////////////////////////////////////////////////////////////
 function assignAvailableParams(body, model, eTimeStampMode) {
 
-  if (body.title      ) { model.title       = body.title;       } 
-  if (body.description) { model.description = body.description; } 
-  if (body.resourceUrl) { model.resourceUrl = body.resourceUrl; } 
-  if (body.state      ) { model.state       = body.state;       } 
-  if (body.author     ) { model.author      = body.author;      } 
+  if (body.hasOwnProperty('title'      )) { model.title       = body.title;       } 
+  if (body.hasOwnProperty('content'    )) { model.content     = body.content;     } 
+  if (body.hasOwnProperty('resourceUrl')) { model.resourceUrl = body.resourceUrl; } 
+  if (body.hasOwnProperty('state'      )) { model.state       = body.state;       } 
+  if (body.hasOwnProperty('author'     )) { model.author      = body.author;      } 
 
   switch (eTimeStampMode) {
     case E_TIMESTAMP_MODE_NONE:
@@ -87,7 +88,7 @@ router.post('/todos', function (req, res, next) {
   todo.save(function (err) {
     if (err) { return next(err); }  // Return 402 DB error ??
 
-    res.json({ message: 'Todo created!', todo_id: todo._id });
+    res.json({ message: 'Todo created!', todo: todo });
   });
 })
 
@@ -97,7 +98,7 @@ router.get('/todos', function (req, res, next) {
   Todo.find(function (err, todos) {
     if (err) { return next(err); } // Return 402 DB error ??
 
-    res.json(todos);
+    res.json({ message: 'Todos retrieved!', todos: todos });
   })
 })
 
@@ -115,7 +116,7 @@ router.get('/todos/:todo_id', function (req, res, next) {
       return res.status(404).json({ message: 'Todo not found!' });
     }
 
-    res.json(todo);
+    res.json({ message: 'Todo retrieved!', todo: todo });
   })
 })
 
@@ -142,7 +143,7 @@ router.put('/todos/:todo_id', function (req, res, next) {
     todo.save(function (err) {
       if (err) { return next(err); } // Return 402 DB error ??
 
-      res.json({ message: 'Todo updated!' });
+      res.json({ message: 'Todo updated!', todo: todo });
     })
   })
 })
@@ -166,13 +167,15 @@ router.patch('/todos/:todo_id', function (req, res, next) {
     todo.save(function (err) {
       if (err) { return next(err); } // Return 402 DB error ??
 
-      res.json({ message: 'Todo updated!' });
+      res.json({ message: 'Todo updated!', todo: todo });
     })
   })
 })
 
 ///////////////////////////////////////////////////////////////////////////////
 // delete a todo
+router.options('/todos/:todo_id', cors()); // enable pre-flight request for DELETE request
+
 router.delete('/todos/:todo_id', function (req, res, next) {
 
   if ((!req.params) || (!req.params.todo_id)) {
