@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var TodoSchema = new mongoose.Schema({
 //id:          mongoose.Schema.Types.ObjectId, NYET _id is auto generated and default
   title:       String,
-  description: String,
+  content:     String,
   resourceUrl: String,
   state:       Number,
   author:      String,
